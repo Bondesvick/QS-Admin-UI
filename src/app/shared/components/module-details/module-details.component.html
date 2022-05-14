@@ -1,0 +1,225 @@
+<div class="mb-8">
+  <p class="font-bold text-2xl">{{ customerRequest?.tranId }}</p>
+  <p class="text-lg">Ticket ID</p>
+</div>
+
+<ul class="flex flex-wrap mb-8 -mx-4">
+  <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+    <span class="font-bold text-lg">Account Name</span>
+    <br />
+    <span class="text-lg">{{ customerRequest?.accountName }}</span>
+  </li>
+  <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+    <span class="font-bold text-lg">Account Number</span>
+    <br />
+    <span class="text-lg">{{ customerRequest?.accountNumber }}</span>
+  </li>
+  <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+    <span class="font-bold text-lg">Customer Auth Type</span>
+    <br />
+    <span class="text-lg">{{
+      startCase(customerRequest?.customerAuthType)
+      }}</span>
+  </li>
+  <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+    <span class="font-bold text-lg">Status</span>
+    <br />
+    <span class="text-lg">{{
+      customerRequest?.status === "AWAITING"
+      ? "Awaiting Feedback From Other Teams"
+      : startCase(customerRequest?.status)
+      }}</span>
+  </li>
+  <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+    <span class="font-bold text-lg">Date Initiated</span>
+    <br />
+    <span class="text-lg">{{ customerRequest?.createdDate }}</span>
+  </li>
+  <li class="w-1/3 mb-8 px-4 overflow-hidden break-all" *ngIf="customerRequest?.remarks">
+    <span class="font-bold text-lg">Remarks</span>
+    <br />
+    <span class="text-lg">{{ customerRequest?.remarks }}</span>
+  </li>
+</ul>
+
+<table class="w-full mb-8" *ngIf="customerRequestDetailsKeys.length">
+  <tr class="flex mb-4">
+    <th class="w-1/2 inline-flex uppercase font-bold text-base tracking-tight" style="color: #777777">
+      Title
+    </th>
+    <th class="w-1/2 inline-flex uppercase font-bold text-base tracking-tight" style="color: #777777">
+      Value
+    </th>
+  </tr>
+  <ng-container *ngFor="let objectKey of customerRequestDetailsKeys">
+    <tr class="flex mb-4" *ngIf="
+        customerRequestDetails[objectKey] &&
+        typeOfValue(customerRequestDetails[objectKey]) !== 'object'
+      ">
+      <td class="w-1/2 inline-flex text-lg">
+        {{ startCase(objectKey) }}
+      </td>
+      <td class="w-1/2 inline-flex text-lg">
+        {{ customerRequestDetails[objectKey] }}
+      </td>
+    </tr>
+  </ng-container>
+</table>
+
+<div class="flex -mx-4">
+  <div class="mb-8 px-4">
+    <span class="font-bold text-lg">Treated By</span>
+    <br />
+    <span class="text-lg">
+      {{ customerRequest?.treatedBy || "Not available" }}
+    </span>
+  </div>
+  <div class="mb-8 px-4">
+    <span class="font-bold text-lg">Treated At</span>
+    <br />
+    <span class="text-lg">
+      <ng-container *ngIf="customerRequest?.treatedDate; else noTreatedDate">
+        {{ customerRequest?.treatedDate }}
+      </ng-container>
+      <ng-template #noTreatedDate> Not available </ng-template>
+    </span>
+  </div>
+</div>
+<div class="flex -mx-4">
+  <div class="mb-8 px-4">
+    <span class="font-bold text-lg">Assigned By</span>
+    <br />
+    <span class="text-lg">
+      {{ customerRequest?.assignedBy || "Not available" }}
+    </span>
+  </div>
+  <div class="mb-8 px-4">
+    <span class="font-bold text-lg">Assigned To</span>
+    <br />
+    <span class="text-lg">
+      {{ customerRequest?.assignedTo || "Not available" }}
+    </span>
+  </div>
+</div>
+
+<!-- PDF -->
+<div class="hidden">
+  <div class="block m-8" id="pdf">
+
+    <p class="text-xl font-bold text-center mb-8">{{customerRequest?.requestType}}</p>
+
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <p class="font-bold text-2xl">{{ customerRequest?.tranId }}</p>
+        <p class="text-lg">Ticket ID</p>
+      </div>
+      <img src="assets/images/standard_bank_logo.png" alt="stanbic logo" />
+    </div>
+
+    <ul class="flex flex-wrap mb-8 -mx-4">
+      <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+        <span class="font-bold text-lg">Account Name</span>
+        <br />
+        <span class="text-lg">{{ customerRequest?.accountName }}</span>
+      </li>
+      <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+        <span class="font-bold text-lg">Account Number</span>
+        <br />
+        <span class="text-lg">{{ customerRequest?.accountNumber }}</span>
+      </li>
+      <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+        <span class="font-bold text-lg">Customer Auth Type</span>
+        <br />
+        <span class="text-lg">{{
+          startCase(customerRequest?.customerAuthType)
+          }}</span>
+      </li>
+      <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+        <span class="font-bold text-lg">Status</span>
+        <br />
+        <span class="text-lg">{{
+          customerRequest?.status === "AWAITING"
+          ? "Awaiting Feedback From Other Teams"
+          : startCase(customerRequest?.status)
+          }}</span>
+      </li>
+      <li class="w-1/3 mb-8 px-4 overflow-hidden break-all">
+        <span class="font-bold text-lg">Date Initiated</span>
+        <br />
+        <span class="text-lg">{{ customerRequest?.createdDate }}</span>
+      </li>
+      <li class="w-1/3 mb-8 px-4 overflow-hidden break-all" *ngIf="customerRequest?.remarks">
+        <span class="font-bold text-lg">Remarks</span>
+        <br />
+        <span class="text-lg">{{ customerRequest?.remarks }}</span>
+      </li>
+    </ul>
+
+    <table class="w-full mb-8" *ngIf="customerRequestDetailsKeys.length">
+      <tr class="flex mb-4">
+        <th class="w-1/2 inline-flex uppercase font-bold text-base tracking-tight" style="color: #777777">
+          Title
+        </th>
+        <th class="w-1/2 inline-flex uppercase font-bold text-base tracking-tight" style="color: #777777">
+          Value
+        </th>
+      </tr>
+      <ng-container *ngFor="let objectKey of customerRequestDetailsKeys">
+        <tr class="flex mb-4" *ngIf="
+        customerRequestDetails[objectKey] &&
+        typeOfValue(customerRequestDetails[objectKey]) !== 'object'
+      ">
+          <td class="w-1/2 inline-flex text-lg">
+            {{ startCase(objectKey) }}
+          </td>
+          <td class="w-1/2 inline-flex text-lg">
+            {{ customerRequestDetails[objectKey] }}
+          </td>
+        </tr>
+      </ng-container>
+    </table>
+
+    <div class="flex -mx-4">
+      <div class="mb-8 px-4">
+        <span class="font-bold text-lg">Treated By</span>
+        <br />
+        <span class="text-lg">
+          {{ customerRequest?.treatedBy || "Not available" }}
+        </span>
+      </div>
+      <div class="mb-8 px-4">
+        <span class="font-bold text-lg">Treated At</span>
+        <br />
+        <span class="text-lg">
+          <ng-container *ngIf="customerRequest?.treatedDate; else noTreatedDate">
+            {{ customerRequest?.treatedDate }}
+          </ng-container>
+          <ng-template #noTreatedDate> Not available </ng-template>
+        </span>
+      </div>
+    </div>
+    <div class="flex -mx-4">
+      <div class="mb-8 px-4">
+        <span class="font-bold text-lg">Assigned By</span>
+        <br />
+        <span class="text-lg">
+          {{ customerRequest?.assignedBy || "Not available" }}
+        </span>
+      </div>
+      <div class="mb-8 px-4">
+        <span class="font-bold text-lg">Assigned To</span>
+        <br />
+        <span class="text-lg">
+          {{ customerRequest?.assignedTo || "Not available" }}
+        </span>
+      </div>
+    </div>
+    <div class="text-right flex justify-end" *ngIf="signatureImages?.length">
+      <div>
+        <span class="font-bold text-lg">Signature</span>
+        <img [src]="'data:'+image.documentContentType+';base64,'+image.documentFile" class="mb-2" alt="Signature"
+          *ngFor="let image of signatureImages">
+      </div>
+    </div>
+  </div>
+</div>

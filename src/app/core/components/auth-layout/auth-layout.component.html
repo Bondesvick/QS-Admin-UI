@@ -1,0 +1,97 @@
+<div class="flex flex-col min-h-screen" style="background: #e5e5e5">
+  <!-- background-image: url('assets/images/header_background.jpeg'); -->
+  <header
+    class="text-white pb-40 bg-cover"
+    style="
+      background: linear-gradient(90deg, #1e5799 31%, #3184db 56%);
+      padding-top: 2rem;
+    "
+  >
+    <div
+      class="mx-auto w-full flex justify-between items-center p-4"
+      style="max-width: 96%"
+    >
+      <div>
+        <p class="font-bold text-xl">{{ staffname }}</p>
+        <p *ngIf="branch !== 'null'" class="text-lg">Branch: {{ branch }}</p>
+        <p class="text-lg">Email: {{ staffemail }}</p>
+        <!-- <a href="#" class="text-lg">Sign Out</a> -->
+      </div>
+      <div class="flex items-center">
+        <div class="font-bold text-2xl">Back Office</div>
+        <div>
+          <div
+            style="
+              width: 75px;
+              border: 1px solid #ffffff;
+              transform: rotate(-75deg);
+            "
+          ></div>
+        </div>
+        <div>
+          <img src="assets/images/standard_bank_logo.png" alt="stanbic logo" />
+        </div>
+      </div>
+    </div>
+  </header>
+  <main
+    class="flex-grow flex flex-col bg-white w-full mx-auto -mt-32"
+    style="max-width: 97%"
+  >
+    <mat-sidenav-container class="flex-grow flex flex-col bg-white">
+      <mat-sidenav
+        class="border w-1/5"
+        style="background-color: rgba(241, 241, 241, 0.47)"
+        mode="side"
+        opened
+      >
+        <div class="p-8">
+          <a [href]="goBackUrl" class="flex items-center mb-12">
+            <div>
+              <mat-icon> keyboard_backspace </mat-icon>
+            </div>
+            <div class="ml-4">
+              <p class="text-md mb-0" style="color: #070707">Go Back</p>
+              <p class="text-md" style="color: #8c8c8c">/Quick Service</p>
+            </div>
+          </a>
+          <div class="mb-12">
+            <p style="color: #454545" class="text-md">
+              Select service and continue
+            </p>
+            <div class="w-full relative">
+              <input
+                style="border: 1px solid rgba(140, 140, 140, 0.5)"
+                class="w-full rounded p-2 pl-12 bg-transparent"
+                type="text"
+                placeholder="Search"
+              />
+              <div
+                class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center"
+              >
+                <mat-icon>search</mat-icon>
+              </div>
+            </div>
+          </div>
+          <div>
+            <ul>
+              <li *ngFor="let eachModule of quickServiceModules" class="mb-8">
+                <a
+                  [routerLink]="eachModule.link"
+                  routerLinkActive="font-bold"
+                  class="flex items-center text-lg"
+                >
+                  <mat-icon>star</mat-icon>
+                  <span class="ml-4">{{ eachModule.name }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content class="flex-grow flex flex-col">
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </main>
+</div>

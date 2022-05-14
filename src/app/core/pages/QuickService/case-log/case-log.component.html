@@ -1,0 +1,378 @@
+<ngx-spinner></ngx-spinner>
+<app-case-layout [title]="selectedModule?.name">
+  <ng-template [ngIf]="!isReportsRoute">
+    <app-number-of-requests-grid [numberOfTotalRequests]="totalDataSource.length"
+      [numberOfPendingRequests]="pendingRequests.length" [numberOfAssignedToMeRequests]="assignedToMeRequests.length"
+      [numberOfAssignedToOthersRequests]="assignedToOthersRequests.length" (showRequestsEvent)="showRequests($event)">
+    </app-number-of-requests-grid>
+  </ng-template>
+  <div class="flex flex-wrap items-center justify-between mb-12">
+    <div class="mb-4">
+      <h2 class="font-bold text-xl">Case Files</h2>
+      <span class="text-lg" *ngIf="dataSource?.length; else noCases">{{ dataSource.length }} items – Page 1 of 1</span>
+      <ng-template #noCases>
+        <span class="text-lg">No cases</span>
+      </ng-template>
+    </div>
+    <div class="flex items-center">
+      <div class="relative w-full">
+        <label>
+          <input style="border: 1px solid rgba(140, 140, 140, 0.5)" class="rounded pl-12 py-4 bg-transparent"
+            type="text" placeholder="Search for CaseID" #searchForCaseIDInput
+            (input)="filterByCaseIdInput(searchForCaseIDInput.value)" />
+        </label>
+        <div class="pointer-events-none absolute inset-y-0 left-0 pl-4 flex items-center">
+          <mat-icon>search</mat-icon>
+        </div>
+      </div>
+      <div class="ml-6">
+        <button mat-stroked-button class="py-2" 
+        (click)="exportAsXLSX()"
+        >
+          <div class="flex items-center">
+            <mat-icon class="w-4 h-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 19">
+                <defs />
+                <path fill="#000"
+                  d="M7.875 5.03125V.25H.84375C.351562.25 0 .636719 0 1.09375V17.4062c0 .4922.351562.8438.84375.8438H12.6562c.4571 0 .8438-.3516.8438-.8438V5.875H8.71875c-.49219 0-.84375-.35156-.84375-.84375zm2.10938 3.76172L7.875 12.0625l2.10938 3.3047c.17582.2812-.03516.6328-.35157.6328H8.40234c-.17578 0-.3164-.0703-.38672-.2109C7.3125 14.5234 6.75 13.3633 6.75 13.3633c-.24609.5273-.35156.7031-1.30078 2.4258-.07031.1406-.21094.2461-.38672.2461H3.86719c-.35157 0-.5625-.3868-.38672-.668L5.625 12.0977 3.48047 8.79297c-.17578-.28125.03515-.63281.38672-.63281H5.0625c.17578 0 .31641.07031.38672.21093.91406 1.72271.70312 1.16016 1.30078 2.39061 0 0 .21094-.3867 1.26562-2.39061.07032-.14062.21094-.21093.38672-.21093h1.23047c.31641-.03516.52739.35156.35157.63281zM13.5 4.53906c0-.21094-.1055-.42187-.2461-.59765L9.80859.496094C9.63281.355469 9.42188.25 9.21094.25H9v4.5h4.5v-.21094z" />
+              </svg>
+            </mat-icon>
+            <span class="ml-2">Export as CSV</span>
+          </div>
+        </button>
+        <!-- <button mat-stroked-button class="py-2" 
+        (click)="exporter.exportTable('csv', { fileName: 'Customer Requests' })"
+        >
+          <div class="flex items-center">
+            <mat-icon class="w-4 h-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 19">
+                <defs />
+                <path fill="#000"
+                  d="M7.875 5.03125V.25H.84375C.351562.25 0 .636719 0 1.09375V17.4062c0 .4922.351562.8438.84375.8438H12.6562c.4571 0 .8438-.3516.8438-.8438V5.875H8.71875c-.49219 0-.84375-.35156-.84375-.84375zm2.10938 3.76172L7.875 12.0625l2.10938 3.3047c.17582.2812-.03516.6328-.35157.6328H8.40234c-.17578 0-.3164-.0703-.38672-.2109C7.3125 14.5234 6.75 13.3633 6.75 13.3633c-.24609.5273-.35156.7031-1.30078 2.4258-.07031.1406-.21094.2461-.38672.2461H3.86719c-.35157 0-.5625-.3868-.38672-.668L5.625 12.0977 3.48047 8.79297c-.17578-.28125.03515-.63281.38672-.63281H5.0625c.17578 0 .31641.07031.38672.21093.91406 1.72271.70312 1.16016 1.30078 2.39061 0 0 .21094-.3867 1.26562-2.39061.07032-.14062.21094-.21093.38672-.21093h1.23047c.31641-.03516.52739.35156.35157.63281zM13.5 4.53906c0-.21094-.1055-.42187-.2461-.59765L9.80859.496094C9.63281.355469 9.42188.25 9.21094.25H9v4.5h4.5v-.21094z" />
+              </svg>
+            </mat-icon>
+            <span class="ml-2">Export as CSV</span>
+          </div>
+        </button> -->
+      </div>
+      <div class="ml-6">
+        <button mat-flat-button color="primary" class="py-2" (click)="openSpoolForCasesDialog()">
+          <div class="flex items-center">
+            <mat-icon class="w-4 h-4">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 19">
+                <defs />
+                <path fill="#fff"
+                  d="M11.25 16H5.34375C4.25391 16 3.375 15.1211 3.375 14.0312V3.625H.84375C.351562 3.625 0 4.01172 0 4.46875V17.4062c0 .4922.351562.8438.84375.8438h9.56245c.4571 0 .8438-.3516.8438-.8438V16zm0-12.09375V.25H5.34375C4.85156.25 4.5.636719 4.5 1.09375V14.0312c0 .4922.35156.8438.84375.8438h9.56245c.4571 0 .8438-.3516.8438-.8438V4.75h-3.6562c-.4922 0-.8438-.35156-.8438-.84375zm4.2188-1.08984L13.1836.53125C13.043.390625 12.7617.25 12.5859.25h-.2109v3.375h3.375v-.21094c0-.17578-.1406-.45703-.2812-.59765z" />
+              </svg>
+            </mat-icon>
+            <span class="ml-2">Spool Cases</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="mb-12">
+      <table mat-table matTableExporter matSort [dataSource]="dataSource" class="w-full" #table
+        #exporter="matTableExporter" (matSortChange)="sortInfo = $event">
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+        <ng-container matColumnDef="tranId">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Ticket ID</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'tranId' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.tranId }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountName">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Account Name</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'accountName' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.accountName }}
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="accountNumber">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Account Number</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'accountNumber'
+                      ? 'visible'
+                      : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.accountNumber }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bvn">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">BVN</div>
+                <div class="flex items-center" [class]="sortInfo?.active === 'bvn' ? 'visible' : 'invisible'">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.bvn }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Date Initiated</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'createdDate' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.createdDate }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assignedTo">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Assigned To</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'assignedTo' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.assignedTo }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Status</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'status' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ formatStatus(element.status) }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="remarks">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Remarks</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'remarks' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.remarks }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="uppercase px-0 border-b-0" style="background-color: #f9f9f9">
+            <div class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Action</div>
+                <div class="flex items-center" [class]="
+                    sortInfo?.active === 'action' ? 'visible' : 'invisible'
+                  ">
+                  <mat-icon>
+                    {{
+                    sortInfo?.direction === "asc"
+                    ? "keyboard_arrow_down"
+                    : sortInfo?.direction === "desc"
+                    ? "keyboard_arrow_up"
+                    : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div *ngIf="selectedModule" class="px-4">
+              <ng-template [ngIf]="!isReportsRoute"> <button mat-stroked-button class="m-2 font-normal"
+                  (click)="openAssignCaseOwnerDialog(element.tranId)" *ngIf="
+                  element.status !== 'RESOLVED' &&
+                  element.status !== 'DECLINED' &&
+                  element.status !== 'EXCEPTION'
+                ">
+                  Assign
+                </button>
+              </ng-template>
+              <a [routerLink]="
+               isReportsRoute ?'/QuickService/reports/' + (spoolModule || selectedModule?.link) + '/' + element.tranId :  '/QuickService/' + (spoolModule || selectedModule?.link) + '/' + element.tranId
+                ">
+                <button mat-stroked-button color="primary" class="m-2 font-normal">
+                  Open
+                </button>
+              </a>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <div class="flex items-center" *ngIf="dataSource.length; else emptyTableState">
+      <!-- <span>Showing 1 to 50 of 317 entries</span>
+      <ul class="flex items-center ml-4">
+        <li *ngFor="let number of [1, 2, 3, 4, 5, 6]">
+          <button
+            class="h-10 w-10 p-0 m-0 rounded-full"
+            [style.background]="number === 3 ? '#1A57DB' : ''"
+            [style.color]="number === 3 ? '#FFFFFF' : ''"
+          >
+            {{ number }}
+          </button>
+        </li>
+      </ul> -->
+    </div>
+
+    <ng-template #emptyTableState>
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <img src="assets/images/icons/empty_state_icon.png" alt="Empty State Icon" class="mb-8 mx-auto" />
+          <p class="text-lg font-bold">No result found for this search</p>
+          <span>Try again or use another filter</span>
+        </div>
+      </div>
+    </ng-template>
+  </section>
+</app-case-layout>

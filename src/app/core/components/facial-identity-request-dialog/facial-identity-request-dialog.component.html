@@ -1,0 +1,61 @@
+<ngx-spinner></ngx-spinner>
+<div class="p-4">
+  <h1 class="text-2xl font-bold">Facial Identity Request</h1>
+
+  <div class="mb-4 relative" *ngIf="facialIdentityRequestControls.requestPhoto.value">
+    <img [src]="'data:image/png;base64,'+facialIdentityRequestControls.requestPhoto.value" alt="passport image"
+      class="h-64 w-64 rounded-full object-cover object-center mx-auto mb-2">
+    <p class="uppercase font-bold text-base tracking-tight mb-4" style="color: #777777">Request Image</p>
+
+    <div *ngIf="facialIdentityRequestStatus === 'SUCCESS'"
+      class="h-16 w-16 text-white rounded-full absolute flex items-center justify-center top-0 right-0 font-bold"
+      [class]="facialIdentityRequestConfidence > 70 ? 'bg-green-600': 'bg-red-600'">
+      <span>
+        {{facialIdentityRequestConfidence}}%
+      </span>
+    </div>
+
+    <div *ngIf="responsePhoto">
+      <img [src]="'data:image/png;base64,'+responsePhoto" alt="passport image"
+        class="h-64 w-64 rounded-full object-cover object-center mx-auto mb-2">
+      <p class="uppercase font-bold text-base tracking-tight" style="color: #777777">Identity Image</p>
+    </div>
+  </div>
+
+
+  <form *ngIf="facialIdentityRequestStatus !== 'SUCCESS'" [formGroup]="facialIdentityRequestFormGroup"
+    (ngSubmit)="facialIdentityRequest(facialIdentityRequestFormGroup.value)">
+
+    <div class="mb-4">
+      <app-material-file-upload class="w-full" text="Upload Image Here" icon="cloud_upload" [target]="
+  'FacialIdentityRequest/UploadDocument'
+" (uploadComplete)="documentUploadComplete($event)"></app-material-file-upload>
+    </div>
+
+    <div class="mb-4">
+      <label for="identity" class="text-lg">Identity Type</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-select placeholder="Select Identity Type" formControlName="identityType">
+          <mat-option *ngFor="let identity of [{type: 'NIN', value: 'nin_facial'},{type:'BVN', value:'bvn_facial'}]"
+            [value]="identity.value">
+            {{ identity.type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="mb-4">
+      <label for="identityNumber" class="text-lg">Identity Number</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="identityNumber" matInput placeholder="Identity Number" formControlName="identityNumber" />
+      </mat-form-field>
+    </div>
+    <div class="w-full mb-4">
+      <button mat-flat-button color="primary" class="px-12 py-1 font-normal w-full" type="submit"
+        [disabled]="facialIdentityRequestFormGroup.status !== 'VALID' || sendFacialIdentityRequestFormStatus === 'PENDING'">
+        {{ !facialIdentityRequestStatus ? "Initiate" : "Approve" }} Facial Identity Request
+      </button>
+    </div>
+  </form>
+
+
+</div>

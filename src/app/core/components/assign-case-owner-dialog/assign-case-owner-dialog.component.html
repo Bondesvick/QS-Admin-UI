@@ -1,0 +1,39 @@
+<ngx-spinner></ngx-spinner>
+<div class="p-4">
+  <div class="mb-20">
+    <p
+      class="uppercase font-bold text-base tracking-tight"
+      style="color: #777777"
+    >
+      Assign Case Owner
+    </p>
+    <p>Assign cases to yourself or other team members</p>
+  </div>
+
+  <form [formGroup]="assignCaseForm" (ngSubmit)="assignCase(assignCaseForm)">
+    <div class="mb-2">
+      <p class="text-lg">Enter SAP ID</p>
+      <mat-form-field appearance="outline" class="w-full">
+        <input
+          matInput
+          placeholder="Enter SAP ID"
+          formControlName="userId"
+          required
+        />
+      </mat-form-field>
+    </div>
+    <div>
+      <button
+        type="submit"
+        mat-flat-button
+        color="primary"
+        class="px-12 py-1 font-normal"
+        [disabled]="
+          assignCaseForm.status !== 'VALID' || assignCaseStatus === 'PENDING'
+        "
+      >
+        Assign Case
+      </button>
+    </div>
+  </form>
+</div>

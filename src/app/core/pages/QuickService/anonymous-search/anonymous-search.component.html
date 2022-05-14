@@ -1,0 +1,422 @@
+<ngx-spinner></ngx-spinner>
+<app-case-layout
+  title="Anonymous Search"
+  subtitle="Select one selector and enter ID to search"
+>
+  <div [formGroup]="searchTypeFormGroup">
+    <mat-radio-group
+      formControlName="selectedSearchType"
+      class="flex flex-wrap justify-between -mx-4 mb-16"
+    >
+      <div
+        *ngFor="let searchType of searchTypes"
+        class="px-4 w-full lg:w-1/3 mb-6"
+      >
+        <div
+          class="w-full h-full border hover:border-blue-600 rounded p-10 cursor-pointer"
+          (click)="
+            searchTypeFormGroup
+              .get('selectedSearchType')
+              .setValue(searchType.searchType)
+          "
+        >
+          <div class="flex">
+            <div>
+              <mat-radio-button
+                [value]="searchType.searchType"
+                color="primary"
+                #searchOption
+              >
+              </mat-radio-button>
+            </div>
+            <div class="ml-4">
+              <p class="font-bold text-xl" style="color: #1a57db">
+                {{ searchType.searchTitle }}
+              </p>
+              <span class="text-lg">{{ searchType.searchSubtitle }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <div class="flex justify-between mb-12">
+    <div class="mb-4">
+      <h2 class="font-bold text-2xl">{{ selectedSearchType.searchTitle }}</h2>
+      <span class="text-lg">Select one selector, enter ID to search with</span>
+    </div>
+    <div class="flex items-center">
+      <div [formGroup]="searchTypeIdentityValueFormGroup">
+        <input
+          style="border: 1px solid rgba(140, 140, 140, 0.5)"
+          class="rounded p-3 bg-transparent w-64"
+          type="text"
+          [placeholder]="'Enter ' + selectedSearchType.searchTitle"
+          formControlName="searchTypeIdentityValue"
+        />
+      </div>
+      <div class="ml-4">
+        <button
+          (click)="
+            getCustomerRequests(
+              selectedSearchType.searchType,
+              searchTypeIdentityValueFormGroup.value.searchTypeIdentityValue
+            )
+          "
+          mat-flat-button
+          color="primary"
+          class="px-12 py-1 font-normal"
+          [disabled]="searchTypeIdentityValueFormGroup.status !== 'VALID'"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="mb-12">
+      <table
+        mat-table
+        matSort
+        [dataSource]="dataSource"
+        class="w-full"
+        #table
+        (matSortChange)="sortInfo = $event"
+      >
+        <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+        <ng-container matColumnDef="tranId">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Ticket ID</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'tranId' ? 'visible' : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.tranId }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Account Name</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'accountName' ? 'visible' : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.accountName }}
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="accountNumber">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Account Number</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'accountNumber'
+                      ? 'visible'
+                      : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.accountNumber }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bvn">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">BVN</div>
+                <div
+                  class="flex items-center"
+                  [class]="sortInfo?.active === 'bvn' ? 'visible' : 'invisible'"
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.bvn }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Date Initiated</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'createdDate' ? 'visible' : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.createdDate }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="requestType">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Request Type</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'requestType' ? 'visible' : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ element.requestType }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Status</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'status' ? 'visible' : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element">
+            <div class="px-4">
+              {{ formatStatus(element.status) }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="uppercase px-0 border-b-0"
+            style="background-color: #f9f9f9"
+          >
+            <div style="border-right: 1px solid #e9e9e9" class="px-4 w-full">
+              <div class="flex items-center justify-between">
+                <div class="mx-2">Action</div>
+                <div
+                  class="flex items-center"
+                  [class]="
+                    sortInfo?.active === 'action' ? 'visible' : 'invisible'
+                  "
+                >
+                  <mat-icon>
+                    {{
+                      sortInfo?.direction === "asc"
+                        ? "keyboard_arrow_down"
+                        : sortInfo?.direction === "desc"
+                        ? "keyboard_arrow_up"
+                        : ""
+                    }}
+                  </mat-icon>
+                </div>
+              </div>
+            </div>
+          </th>
+          <td class="px-0" mat-cell *matCellDef="let element; let i = index">
+            <div class="px-4">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="m-2 font-normal"
+                (click)="openDetailDialog(i)"
+              >
+                Open
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <div
+      class="flex items-center"
+      *ngIf="dataSource.length; else emptyTableState"
+    >
+      <!-- <span>Showing 1 to 50 of 317 entries</span>
+      <ul class="flex items-center ml-4">
+        <li *ngFor="let number of [1, 2, 3, 4, 5, 6]">
+          <button
+            class="h-10 w-10 p-0 m-0 rounded-full"
+            [style.background]="number === 3 ? '#1A57DB' : ''"
+            [style.color]="number === 3 ? '#FFFFFF' : ''"
+          >
+            {{ number }}
+          </button>
+        </li>
+      </ul> -->
+    </div>
+
+    <ng-template #emptyTableState>
+      <div class="flex items-center justify-center h-64">
+        <div class="text-center">
+          <img
+            src="assets/images/icons/empty_state_icon.png"
+            alt="Empty State Icon"
+            class="mb-8 mx-auto"
+          />
+          <p class="text-lg font-bold">No result found for this search</p>
+          <span>Try again or use another filter</span>
+        </div>
+      </div>
+    </ng-template>
+  </section>
+</app-case-layout>

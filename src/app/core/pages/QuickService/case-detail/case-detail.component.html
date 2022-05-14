@@ -1,0 +1,295 @@
+<ngx-spinner></ngx-spinner>
+<app-case-layout [title]="selectedModule?.name" subtitle="View and process cases">
+  <!-- <app-number-of-requests-grid></app-number-of-requests-grid> -->
+  <div>
+    <div class="flex justify-between items-center mb-12">
+      <a routerLink="../" class="flex items-center">
+        <mat-icon> keyboard_backspace </mat-icon>
+        <h2 class="font-bold text-xl ml-4 mb-0">Case Files</h2>
+      </a>
+
+      <button mat-stroked-button class="px-12 py-1 font-normal text-lg" (click)="generatePdf()">
+        <mat-icon class="mr-2">download</mat-icon>
+        Download as PDF
+      </button>
+    </div>
+    <div class="flex flex-wrap justify-between -mx-4 mb-16">
+      <div class="w-full lg:w-1/2 px-4 mb-4">
+        <div class="w-full h-full border-2 rounded p-6">
+          <app-module-details [customerRequest]="caseDetail" [customerRequestDetails]="moduleCustomerDetails">
+          </app-module-details>
+          <ng-template [ngIf]="!isReportsRoute">
+            <form [formGroup]="updateRequestFormGroup" (ngSubmit)="updateRequest(updateRequestFormGroup)"
+              class="flex flex-wrap -mx-4" *ngIf="
+            caseDetail?.status !== 'RESOLVED' &&
+            caseDetail?.status !== 'EXCEPTION' &&
+            caseDetail?.status !== 'DECLINED'
+            ">
+              <div class="w-1/2 px-4 mb-4">
+                <div class="w-full">
+                  <p class="text-lg">Ticket Status</p>
+                  <mat-form-field appearance="outline" class="w-full">
+                    <mat-select formControlName="status" [value]="caseDetail?.Status || 'ASSIGNED'"
+                      (selectionChange)="statusChanged($event.value)" placeholder="Ticket Status">
+                      <mat-option value="ASSIGNED"> Assigned </mat-option>
+                      <mat-option value="WORK-IN-PROGRESS">
+                        Work in Progress
+                      </mat-option>
+                      <mat-option value="AWAITING">
+                        Awaiting Feedback From Other Teams
+                      </mat-option>
+                      <mat-option value="EXCEPTION"> Exception </mat-option>
+                      <mat-option value="REOPENED"> Reopened </mat-option>
+                      <mat-option value="RESOLVED"> Resolved </mat-option>
+                      <mat-option value="DECLINED"> Declined </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="w-1/2 px-4 mb-4">
+                <div class="w-full">
+                  <label for="assignCase" class="text-lg">Assign Case</label>
+                  <mat-form-field appearance="outline" class="w-full">
+                    <input id="assignCase" matInput placeholder="Enter SAP ID" formControlName="userId" />
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="w-full px-4 mb-4" *ngIf="updateRequestFormGroup.value.status === 'EXCEPTION'">
+                <div class="w-full">
+                  <p class="text-lg">Reason for Exception</p>
+                  <mat-form-field appearance="outline" class="w-full">
+                    <mat-select formControlName="rejectionReason"
+                      (selectionChange)="rejectionReasonChanged($event.value)">
+                      <mat-option value="Incomplete documentation">
+                        Incomplete documentation
+                      </mat-option>
+                      <mat-option value="Irregular signature">
+                        Irregular signature
+                      </mat-option>
+                      <mat-option value="Incomplete documentation and irregular signature">
+                        Incomplete documentation and irregular signature
+                      </mat-option>
+                      <mat-option value="Incomplete information">
+                        Incomplete information
+                      </mat-option>
+                      <mat-option value="Others"> Others </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="w-full px-4 mb-4" *ngIf="updateRequestFormGroup.value.rejectionReason === 'Others'">
+                <div class="w-full">
+                  <label for="rejectionReason" class="text-lg">Rejection Reason</label>
+                  <mat-form-field appearance="outline" class="w-full">
+                    <input id="rejectionReason" matInput placeholder="Enter Rejection Reason"
+                      formControlName="rejectionReasonOthers" />
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="w-full px-4 mb-4">
+                <div class="w-full">
+                  <mat-form-field appearance="outline" class="w-full">
+                    <label>
+                      <textarea matInput placeholder="Enter Remarks" rows="5" formControlName="remarks"
+                        [value]="caseDetail?.Remarks || ''"></textarea>
+                    </label>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="w-full px-4 mb-4">
+                <button type="submit" mat-flat-button color="primary" class="px-12 py-1 font-normal" [disabled]="
+                  updateRequestFormGroup.status !== 'VALID' ||
+                  updateRequestFormStatus === 'PENDING'
+                ">
+                  Update Request
+                </button>
+              </div>
+            </form>
+          </ng-template>
+
+        </div>
+      </div>
+      <div class="w-full lg:w-1/2 px-4 mb-4">
+        <div class="w-full h-full border-2 rounded">
+          <div class="p-6">
+            <div class="mb-8">
+              <p class="font-bold text-lg">BackOffice Uploaded Documents</p>
+            </div>
+
+            <ul class="mb-32">
+              <li *ngIf="!caseDetail?.customerRequestDocuments?.length"
+                class="mb-2 flex items-center justify-between text-lg">
+                There are currently no documents
+              </li>
+              <li *ngFor="let each of caseDetail?.customerRequestDocuments"
+                class="mb-2 flex items-center justify-between">
+                <span class="text-lg">{{ each.documentFilename }}</span>
+                <div>
+                  <button mat-button class="m-1 text-lg font-normal" color="primary" (click)="
+                      openDocument(
+                        each.documentFile,
+                        each.documentFilename,
+                        each.documentType
+                      )
+                    ">
+                    View
+                  </button>
+                  <button mat-button class="m-1 text-lg font-normal" color="primary" (click)="
+                      downloadDocument(
+                        each.documentFile,
+                        each.documentFilename,
+                        each.documentType
+                      )
+                    ">
+                    Download
+                  </button>
+                  <button mat-button class="m-1 text-lg font-normal" color="warn"
+                    (click)="removeCustomerRequestDocument(each.id)">
+                    Remove
+                  </button>
+                </div>
+              </li>
+              <li>
+                <app-material-file-upload text="Upload Document Here" icon="cloud_upload" [target]="
+                    'CustomerRequest/UploadDocument/' + caseDetail?.tranId
+                  " (uploadComplete)="documentUploadComplete($event)"></app-material-file-upload>
+              </li>
+            </ul>
+
+            <div class="mb-32">
+              <p class="font-bold text-lg">Customer Uploaded Documents</p>
+              <ul>
+                <li *ngIf="!moduleCustomerDocuments?.length" class="mb-2 flex items-center justify-between text-lg">
+                  There are currently no documents
+                </li>
+                <li *ngFor="let each of moduleCustomerDocuments" class="mb-2 flex items-center justify-between">
+                  <span class="text-lg">
+                    {{ each.documentName ? each.documentName : "" }}
+                    {{
+                    each.documentFullName ? " – " + each.documentFullName : ""
+                    }}
+                    {{ each.documentNumber ? " – " + each.documentNumber : "" }}
+                  </span>
+                  <div *ngIf="each.documentFile">
+                    <button mat-button class="m-1 text-lg font-normal" color="primary" (click)="
+                        openDocument(
+                          each.documentFile,
+                          each.documentFullName,
+                          each.documentContentType
+                        )
+                      ">
+                      View
+                    </button>
+                    <button mat-button class="m-1 text-lg font-normal" color="primary" (click)="
+                        downloadDocument(
+                          each.documentFile,
+                          each.documentFullName,
+                          each.documentContentType
+                        )
+                      ">
+                      Download
+                    </button>
+                  </div>
+                </li>
+                <li class="mt-32">
+                  <button mat-stroked-button class="px-12 py-1 font-normal text-lg" style="color: #8c8c8c"
+                    (click)="downloadAllDocuments()">
+                    <mat-icon class="mr-2">cloud_download</mat-icon>
+                    Download All Documents
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div class="mb-32" *ngIf="caseDetail?.status === 'REOPENED'">
+              <p class="font-bold text-lg">Request Re-opened</p>
+              <ul>
+                <li class="mb-2 flex items-center justify-between text-lg">
+                  {{ caseDetail?.reopenedDetails.remarks }}
+                </li>
+                <li *ngIf="
+                    !caseDetail.reopenedDetails?.requestAndStatusMgtDocs?.length
+                  " class="mb-2 flex items-center justify-between text-lg">
+                  There are currently no documents
+                </li>
+                <li *ngFor="
+                    let each of caseDetail?.reopenedDetails
+                      ?.requestAndStatusMgtDocs
+                  " class="mb-2 flex items-center justify-between">
+                  <span class="text-lg">
+                    {{ each.title + " " + each.fileName }}
+                  </span>
+                  <div *ngIf="each.contentOrPath">
+                    <button mat-button class="m-1 text-lg font-normal" color="primary" (click)="
+                        openDocument(
+                          each.contentOrPath,
+                          each.title + ' ' + each.fileName,
+                          each.documentContentType
+                        )
+                      ">
+                      View
+                    </button>
+                    <button mat-button class="m-1 text-lg font-normal" color="primary" (click)="
+                        downloadDocument(
+                          each.documentFile,
+                          each.documentFullName,
+                          each.documentContentType
+                        )
+                      ">
+                      Download
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="!isReportsRoute" class="mb-32">
+              <p class="font-bold text-lg">Actions</p>
+              <ul>
+                <li class="mb-2"
+                  *ngIf="selectedModule.link === 'account-reactivation' || selectedModule.link === 'account-upgrade'">
+                  <div class="flex items-center">
+                    <button mat-flat-button color="primary" class="px-12 py-1 font-normal"
+                      (click)="openCardRequestDialog()" [disabled]="
+                        caseDetail?.cardRequestDetails?.status === 'SUCCESS'
+                      ">
+                      Card Request
+                    </button>
+                    <p *ngIf="
+                        caseDetail?.cardRequestDetails?.status === 'SUCCESS'
+                      " class="text-sm ml-2 mb-0">
+                      Card request successful
+                    </p>
+                  </div>
+                </li>
+                <!-- <li class="mb-2"
+                  *ngIf="selectedModule.link === 'account-reactivation' || selectedModule.link === 'account-upgrade' || selectedModule.link === 'data-mandate'">
+                  <div class="flex items-center">
+                    <button mat-flat-button color="primary" class="px-12 py-1 font-normal"
+                      (click)="openAddressRequestDialog()" [disabled]="
+                        caseDetail?.addressRequestDetails?.status === 'SUCCESS'
+                      ">
+                      Address Request
+                    </button>
+                    <p *ngIf="
+                        caseDetail?.addressRequestDetails?.status === 'SUCCESS'
+                      " class="text-sm ml-2 mb-0">
+                      Address request successful
+                    </p>
+                  </div>
+                </li> -->
+                <!-- <li class="mb-2" *ngIf="false">
+                  <div class="flex items-center">
+                    <button mat-flat-button color="primary" class="px-12 py-1 font-normal"
+                      (click)="openFacialIdentityRequestDialog()">
+                      Facial Identity Request
+                    </button>
+                  </div>
+                </li> -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-case-layout>

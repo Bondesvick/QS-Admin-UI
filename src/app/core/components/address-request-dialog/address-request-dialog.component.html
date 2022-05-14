@@ -1,0 +1,74 @@
+<ngx-spinner></ngx-spinner>
+<form [formGroup]="addressRequestFormGroup" (ngSubmit)="addressRequest(addressRequestFormGroup.value)" class="p-4">
+  <h1 class="text-2xl font-bold">Address Request</h1>
+  <div class="flex flex-wrap justify-between items-center -mx-4 mb-4">
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="addressCity" class="text-lg mb-2">City <span class="text-red-600">*</span></label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="addressCity" matInput placeholder="Enter City" formControlName="city" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="addressState" class="text-lg mb-2">State <span class="text-red-600">*</span></label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="addressState" matInput placeholder="Enter State" formControlName="state" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="remarks" class="text-lg mb-2">Remarks</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="remarks" matInput placeholder="Remarks" formControlName="remarks" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="addressLine1" class="text-lg mb-2">Address Line 1 <span class="text-red-600">*</span></label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="addressLine1" matInput placeholder="Address Line 1" formControlName="addressLine1" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="addressLine2" class="text-lg mb-2">Address Line 2</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="addressLine2" matInput placeholder="Address Line 2" formControlName="addressLine2" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="alias" class="text-lg mb-2">Alias</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="alias" matInput placeholder="Alias" formControlName="alias" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="emailAddress" class="text-lg mb-2">Email Address</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="emailAddress" matInput placeholder="Email Address" formControlName="emailAddress" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="landMark" class="text-lg mb-2">Landmark</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="landMark" matInput placeholder="Landmark" formControlName="landMark" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="companyName" class="text-lg mb-2">Company Name</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="companyName" matInput placeholder="Company Name" formControlName="companyName" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="phoneNumber" class="text-lg mb-2">Phone Number</label>
+      <mat-form-field appearance="fill" class="w-full">
+        <input id="phoneNumber" matInput placeholder="Phone Number" formControlName="phoneNumber" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-full mb-4 mx-4">
+      <button mat-flat-button color="primary" class="px-12 py-1 font-normal" type="submit" [disabled]="
+          addressRequestFormGroup.status != 'VALID' ||
+          sendAddressRequestFormStatus === 'PENDING'
+        ">
+        Initiate Address Request
+      </button>
+    </div>
+  </div>
+</form>

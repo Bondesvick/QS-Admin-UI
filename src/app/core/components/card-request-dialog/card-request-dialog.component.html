@@ -1,0 +1,100 @@
+<ngx-spinner></ngx-spinner>
+<form [formGroup]="cardRequestFormGroup" (ngSubmit)="cardRequest(cardRequestFormGroup.value)" class="p-4">
+  <h1 class="text-2xl font-bold">Card Request</h1>
+  <div class="flex flex-wrap justify-between items-center -mx-4 mb-4">
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">City <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select City" formControlName="city">
+          <mat-option *ngFor="let city of cities" [value]="city">
+            {{ city }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">Customer Title <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select Customer Title" formControlName="customerTitle">
+          <mat-option *ngFor="let customerTitle of titles" [value]="customerTitle">
+            {{ customerTitle }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">Marital Status <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select Marital Status" formControlName="maritalStatus">
+          <mat-option *ngFor="let maritalStatus of maritalStatuses" [value]="maritalStatus">
+            {{ maritalStatus }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">Customer Gender <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select Customer Gender" formControlName="customerGender">
+          <mat-option *ngFor="let customerGender of genders" [value]="customerGender">
+            {{ customerGender == "M" ? "Male" : "Female" }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">Initiating Branch <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select Initiating Branch" formControlName="initiatingBranch">
+          <mat-option *ngFor="let initiatingBranch of branches" [value]="initiatingBranch.branchSol">
+            {{ initiatingBranch.branchDesc }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">Collection Branch <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select Collection Branch" formControlName="collectionBranch">
+          <mat-option *ngFor="let collectionBranch of branches" [value]="collectionBranch.branchSol">
+            {{ collectionBranch.branchDesc }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label class="text-lg mb-2">Card Type <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <mat-select placeholder="Select Card Type" formControlName="cardType">
+          <mat-option *ngFor="let cardType of cards" [value]="cardType">
+            {{ cardType }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="preferredNameOnCard" class="text-lg mb-2">Preferred Name on Card <span
+          class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <input id="preferredNameOnCard" matInput placeholder="Preferred Name on Card"
+          formControlName="preferredNameOnCard" maxlength="19" />
+        <mat-error *ngIf="cardRequestFormGroupControls.accountName.invalid">Name is required and must be less than 20
+          characters</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-1/4 mb-4 mx-4">
+      <label for="accountToDebit" class="text-lg mb-2">Account to Debit <span class="text-red-600">*</span></label>
+      <mat-form-field required appearance="fill" class="w-full">
+        <input id="accountToDebit" matInput placeholder="Account to Debit" formControlName="accountToDebit" />
+      </mat-form-field>
+    </div>
+    <div class="flex-grow w-full mb-4 mx-4">
+      <button mat-flat-button color="primary" class="px-12 py-1 font-normal" type="submit" [disabled]="
+          cardRequestFormGroup.status != 'VALID' ||
+          sendCardRequestFormStatus === 'PENDING'
+        ">
+        {{ !cardRequestStatus ? "Initiate" : "Approve" }} Card Request
+      </button>
+    </div>
+  </div>
+</form>

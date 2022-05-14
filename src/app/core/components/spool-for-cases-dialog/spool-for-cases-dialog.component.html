@@ -1,0 +1,88 @@
+<ngx-spinner></ngx-spinner>
+<div class="p-4">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold">Spool For Cases</h1>
+  </div>
+
+  <div>
+    <form [formGroup]="spoolCasesForm" class="flex flex-wrap justify-between items-center -mx-4 mb-4"
+      (ngSubmit)="submitSpoolCasesForm()">
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Date Created (Start)</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="Start Date" type="date" formControlName="startDate" />
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Date Created (End)</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="End Date" type="date" formControlName="endDate" />
+        </mat-form-field>
+      </div>
+
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Date Treated (Start)</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="Start Date" type="date" formControlName="treatedStartDate" />
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Date Treated (End)</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="End Date" type="date" formControlName="treatedEndDate" />
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Status</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-select formControlName="status" placeholder="Select Status">
+            <mat-option value="PENDING"> Pending </mat-option>
+            <mat-option value="ASSIGNED"> Assigned </mat-option>
+            <mat-option value="WORK-IN-PROGRESS"> Work in Progress </mat-option>
+            <mat-option value="AWAITING">
+              Awaiting Feedback From Other Teams
+            </mat-option>
+            <mat-option value="INCOMPLETE"> Incomplete </mat-option>
+            <mat-option value="DECLINED"> Declined </mat-option>
+            <mat-option value="EXCEPTION"> Exception </mat-option>
+            <mat-option value="REOPENED"> Reopened </mat-option>
+            <mat-option value="RESOLVED"> Resolved </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Request Type</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-select formControlName="module" placeholder="Select Request Type">
+            <mat-option [value]="each.link" *ngFor="let each of quickServiceModules">
+              {{ each.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Ticket ID</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="Ticket ID" formControlName="ticketId" />
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">Account Number</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="Account Number" formControlName="accountNumber" />
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-1/4 mb-4 mx-4">
+        <p class="text-lg">BVN</p>
+        <mat-form-field appearance="fill" class="w-full">
+          <input matInput placeholder="BVN" formControlName="bvn" />
+        </mat-form-field>
+      </div>
+      <div class="flex-grow w-full mb-4 mx-4">
+        <button mat-flat-button color="primary" class="px-12 py-1 font-normal" type="submit">
+          Search
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
